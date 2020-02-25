@@ -1,28 +1,23 @@
-class Profile {
-    constructor({ username, name: { firstName, lastName }, password }) {
-        this.username = username;
-        this.name = { firstName, lastName };
-        this.password = password;
-    }
-}
+"use strict"
 
-addUser(callback); {
-    console.log(`Adding user ${this.username}`);
-    return ApiConnector.create.user({
-            username: this.username,
-            name: this.name,
-            password: this.password
-        },
-        (err, data) => callback(err, data)
-    );
-}
+const userForm = new UserForm();
 
-authorization(callback); {
-    console.log(`Authorizating user ${this.username}`);
-    return ApiConnector.performLogin({
-            username: this.username,
-            password: this.password
-        },
-        (err, data) => callback(err, data)
-    );
-}
+userForm.loginFormCallback = data =>
+    ApiConnector.login(data, response => {
+        if (response.success) {
+            location.reload();
+            console.log("Всё хорошо! :)");
+        } else {
+            userForm.setLoginErrorMessage("Ой! Неверный логин!");
+        }
+    });
+
+userForm.registerFormCallback = data =>
+    ApiConnector.register(data, response => {
+        if (response.success) {
+            location.reload();
+            console.log("Всё хорошо! :)")
+        } else {
+            userForm.setRegusterErrorMessage("Возникла ошибка! :(");
+        }
+    });

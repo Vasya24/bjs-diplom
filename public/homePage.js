@@ -1,100 +1,98 @@
-addMoney({ currency, amount }, callback); {
-    console.log(`Adding ${amount} of ${currency} to ${this.username}`);
-    return ApiConnector.addMoney({ currency: cuurency, amount: amount },
-        (err, data) => callback(err, data)
-    );
-}
+"use strict"
 
-convertMoney({ fromCurrency, targetCurrency, targetAmount }, callback); {
-    console.log(`Converting ${fromCurrency} to ${targetAmount} of ${targetCurrency}`);
-    return ApiConnector.convertMoney({ fromCurrency: fromCurrency, targetCurrency: targetCurrency, targetAmount: targetAmount },
-        (err, data) => callback(err, data)
-    );
-}
+import { response } from "express";
 
-transferMoney({ to, amount }, callback); {
-    console.log(`Tranfering ${amount} NETCOINS from ${this.username} to ${to}`);
-    return ApiConnector.transferMoney({ to: to, amount: amount },
-        (err, data) => callback(err, data)
-    );
-}
+const logoutButton = new LogoutButton();
+const ratesBoard = new ratesBoard();
+const moneyManager = newMoneyManager();
 
-function getStocks(callback) {
-    return ApiConnector.getStocks((err, data) => {
-        console.log(`Getting stocks info`);
-        callback(err, data);
-    });
-}
 
-function main() {
-    const Vasiliy = new Profile({
-        username: 'Vasiliy',
-        name: { firstName: 'Vasiliy', lastName: 'Smirnov' },
-        password: 'qwerty123456',
-    });
-    const Julia = new Profile({
-        username: 'Julia',
-        name: { firstName: 'Julia', lastName: 'Smirnova' },
-        password: 'julia123',
-    });
-
-    getStocks((err, data) => {
-        if (err) {
-            console.error('Error occured')
+logoutButton.action = function() {
+    ApiConnector.logout(response => {
+        if (response.success) {
+            location.reload();
+            console.log("Всё хорошо! :)");
         } else {
-            let currencyConvert = data;
-            console.log(currencyConvert);
-
-            Vasiliy.createUser((err, data) => {
-                if (err) {
-                    console.error('Error during user creating')
-                } else {
-                    console.log(`${Vasiliy.username} account created`);
-                }
-
-                Julia.createUser((err, data) => {
-                    if (err) {
-                        console.error(`Error during user creating`)
-                    } else {
-                        console.log(`${Julia.username} account created`);
-                    }
-
-                    Vasiliy.performLogin((err, data) => {
-                        if (err) {
-                            console.error(`Authorization error`)
-                        } else {
-                            console.log(`${Vasiliy.username} authorized`);
-                        }
-
-                        Vasiliy.addMoney({ currency: 'RUB', amount: 1000 }, (err, data) => {
-                            if (err) {
-                                console.error(`Error during money receiveing to ${Vasiliy.name}`);
-                            } else {
-                                const converted = currencyConvert[99].RUB_NETCOIN * data.wallet.RUB;
-                                console.log(`1000 RUB received by ${Vasiliy.username}`);
-                            }
-
-                            Vasiliy.convertMoney({ fromCurrency: 'RUB', targetCurrency: 'NETCOIN', targetAmount: converted }, (err, data) => {
-                                if (err) {
-                                    console.error(`Convertion error`);
-                                } else {
-                                    console.log(`Converted to coins`, data);
-                                    const transfer = data.wallet.NETCOIN;
-                                    Vasiliy.transferMoney({ to: Julia.username, amount: transfer }, (err, data) => {
-                                        if (err) {
-                                            console.error(`Transfer error`)
-                                        } else {
-                                            console.log(`${Julia.username} has got ${tranfer} NETCOINS`);
-                                        }
-                                    });
-                                };
-                            });
-
-                        });
-                    });
-
-                });
-            });
-        };
+            console.log("Возникла ошибка :(");
+        }
     });
-}
+};
+
+ApiConnector.current(response => {
+    if (response.success) {
+        ProfileWidget.showProfile(response.data);
+        console.log("Всё хорошо! :)")
+    } else {
+        console.log("Возникла ошибка :(");
+    }
+});
+
+let rateBoard = function() {
+    ApiConnector.getStocks(response => {
+        if (response.success) {
+            ratesBoard.clearTable();
+            ratesBoard.fillTable(response.data);
+            console.log("Всё хорошо! :)");
+        } else {
+            console.log("Возникла ошибка :(");
+        }
+    });
+};
+
+rateBoard();
+setInterval(rateBoard, 60000);
+
+moneyManager.addMoneyCallback = data =>
+    ApiConnector.addMoney(data, response => {
+        if (response.success) {
+            ProfileWidget.showProfile(response, data);
+            favoritesWidget.setMessage(!response.success, "Баланс пополнен");
+        } else {
+            favoritesWidget.setMessage(response.success, "Ошибочка вышла!")
+        }
+    });
+
+moneyManager.conversionMoneyCallback = data =>
+    ApiConnector.convertMoney(data, response => {
+        if (response.success) {
+            ProfileWidget.showProfile(response.data);
+            favoritesWidget.setMessage(!response.success, "Конвертация выполнена!");
+        } else {
+            favoritesWidget.setMessage(respone.success, "Ошибочка вышла!");
+        }
+    });
+
+ApiConnector.getFavorites(response => {
+    if (response.success) {
+        favoritesWidget.clearTable();
+        favoritesWidget.fillTable(response.data);
+        moneyManager.updateUsersList(response.data);
+        console.log("Всё хорошо! :)");
+    } else {
+        console.log("Возникла ошибка :(")
+    }
+});
+
+favoritesWidget.addUserCallback = data =>
+    ApiConnector.addUserToFavorites(data, response => {
+        if (response.success) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(response.data);
+            moneyManager.updateUsersList(response.data);
+            favoritesWidget.setMessage(!response.success, "Добавили пользователя!");
+        } else {
+            favoritesWidget.setMessage(response.success, "Ошибочка вышла!");
+        }
+    });
+
+favoritesWidget.removeUserCallback = data =>
+    ApiConnector.removeUserFromFavorites(data, response => {
+        if (response.success) {
+            favoritesWidget.clearTable();
+            favoritesWidget.fillTable(response.data);
+            moneyManager.updateUsersList(response.data);
+            favoritesWidget.setMessage(!response.success, "Удалили пользователя!");
+        } else {
+            favoritesWidget.setMessage(response.success, "Ошибочка вышла!");
+        }
+    });

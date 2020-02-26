@@ -1,6 +1,6 @@
 "use strict"
 
-import { response } from "express";
+// import { response } from "express";
 
 const logoutButton = new LogoutButton();
 const ratesBoard = new ratesBoard();

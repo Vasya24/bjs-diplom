@@ -3,7 +3,7 @@
 // import { response } from "express";
 
 const logoutButton = new LogoutButton();
-const ratesBoard = new ratesBoard();
+const ratesBoard = new RatesBoard();
 const moneyManager = newMoneyManager();
 
 

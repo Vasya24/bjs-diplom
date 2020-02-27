@@ -4,7 +4,7 @@
 
 const logoutButton = new LogoutButton();
 const ratesBoard = new RatesBoard();
-const moneyManager = newMoneyManager();
+const moneyManager = new MoneyManager();
 
 
 logoutButton.action = function() {

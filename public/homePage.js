@@ -62,6 +62,8 @@ moneyManager.conversionMoneyCallback = data =>
         }
     });
 
+const FavoritesWidget = new FavoritesWidget();
+
 ApiConnector.getFavorites(response => {
     if (response.success) {
         FavoritesWidget.clearTable();

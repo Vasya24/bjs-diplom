@@ -18,6 +18,6 @@ userForm.registerFormCallback = data =>
             location.reload();
             console.log("Всё хорошо! :)")
         } else {
-            userForm.setRegusterErrorMessage("Возникла ошибка! :(");
+            userForm.setRegisterErrorMessage("Возникла ошибка! :(");
         }
     });
